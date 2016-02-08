@@ -1,0 +1,60 @@
+# Database
+dbdata:
+  image: postgres:latest
+  volumes:
+    - /var/lib/postgresql
+  #command: true
+  environment:
+    - POSTGRES_PASSWORD=postgres
+
+db:
+  image: postgres
+  volumes_from:
+    - dbdata
+  ports:
+    - "5432"
+  environment:
+    - POSTGRES_PASSWORD=postgres
+
+ # Redis
+ # redisdata:
+ # image: redis:latest
+ #  volumes:
+ #    - /var/lib/redis
+ #  command: true
+
+ #redis:
+ # image: redis:latest
+ # volumes_from:
+ #   - redisdata
+ # ports:
+ #   - "6379"
+
+# Web and workers
+web:
+  build: .
+  volumes:
+    - .:/app/
+    - /sockets
+  links:
+      - db:postgres
+      #- redis
+      #ports:
+      #- "3030:5000"
+      #- "4000:4000"
+  environment:
+    - INSTANCE_TYPE=web
+    - DEBUG=1
+    - DJANGO_SETTINGS_MODULE=super.settings
+    - DATABASE_URL=postgres://postgres:postgres@postgres/postgres
+
+server:
+  image: nginx
+  ports:
+    - "80:80"
+  links:
+    - web
+  volumes_from:
+    - web
+  volumes:
+    - ./conf.d:/etc/nginx/conf.d

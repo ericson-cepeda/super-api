@@ -1,0 +1,16 @@
+- load staticfiles
+- load pipeline
+doctype html
+html
+  head
+    script(src='{% static "main/js/libs/require.js" %}', data-main='{% static "main/js/app.js" %}', type='text/javascript')
+  body
+    #header
+    #box
+    #container
+
+    //- javascript 'scripts'
+
+    - stylesheet 'links'
+
+

@@ -1,0 +1,25 @@
+{
+  "name": "conciliador",
+  "version": "1.0.0",
+  "description": "conciliador",
+  "main": "index.js",
+  "dependencies": {
+    "bower": "~1.5.2",
+    "cssmin": "~0.4.3",
+    "jeet": "~6.1.2",
+    "mithril": "~0.2.0",
+    "stylus": "~0.52.4"
+  },
+  "devDependencies": {
+    "coffee-script": "~1.10.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@bitbucket.org:ericson_cepeda/super-api.git"
+  },
+  "author": "Ericson Cepeda",
+  "license": "BSD-2-Clause"
+}

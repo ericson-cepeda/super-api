@@ -1,0 +1,14 @@
+*.pyc
+super/settings/local.py
+application/data/procedures2.json
+superdump
+node_modules/
+media/*
+*.db
+.idea/
+.DS_Store
+*.rdb
+*.log
+bower_components/
+*~
+nohup.out
