@@ -74,16 +74,27 @@ MIDDLEWARE_CLASSES = (
     'pipeline.middleware.MinifyHTMLMiddleware',
 )
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-    'django.contrib.messages.context_processors.messages',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.static',
-    'django.core.context_processors.media',
-    'django.core.context_processors.request',
-    'django.contrib.messages.context_processors.messages',
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),],
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+            'loaders': [
+                # PyJade part:   ##############################
+                ('pyjade.ext.django.Loader', (
+                    'django.template.loaders.filesystem.Loader',
+                    'django.template.loaders.app_directories.Loader',
+                ))
+            ],
+        },
+    },
+]
 
 ROOT_URLCONF = 'super.urls'
 
@@ -131,17 +142,6 @@ LOGIN_REDIRECT_URL = '/'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_COOKIE_AGE = 5 * 60
 
-# UI templates
-
-TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'templates'),)
-TEMPLATE_LOADERS = (
-    ('pyjade.ext.django.Loader',(
-        'django.template.loaders.filesystem.Loader',
-        'django.template.loaders.app_directories.Loader',
-        'django.template.loaders.eggs.Loader',
-    )),
-)
-
 # UI static
 
 STATIC_ROOT = os.path.join('/sockets', 'cache-super/static')
@@ -163,41 +163,46 @@ STATICFILES_FINDERS = (
 )
 
 #PIPELINE_ENABLED = True
-PIPELINE_STORAGE = 'pipeline.storage.PipelineFinderStorage'
-PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.jsmin.JSMinCompressor'
-PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.cssmin.CSSMinCompressor'
-PIPELINE_COMPILERS = (
+#PIPELINE_STORAGE = 'pipeline.storage.PipelineFinderStorage'
+STATICFILES_STORAGE = 'pipeline.storage.PipelineStorage'
+
+PIPELINE = {
+    'PIPELINE_ENABLED': True,
+    'JAVASCRIPT': {
+        'scripts': {
+            'source_filenames': (
+                'super_api/coffee/*.coffee',
+                'main/js/*.js',
+                'main/coffee/*.coffee',
+            ),
+            'extra_context': {
+                'async': True,
+            },
+            'output_filename': os.path.join('js', 'compressed.js'),
+        }
+    },
+    'STYLESHEETS': {
+        'links': {
+            'source_filenames': (
+                'super_api/styl/*.styl',
+                'main/styl/*.styl',
+            ),
+            'output_filename': os.path.join('css', 'compressed.css'),
+            'extra_context': {
+                'media': 'screen,projection',
+            },
+            'variant': 'datauri'
+        }
+    }
+}
+
+PIPELINE['JS_COMPRESSOR'] = 'pipeline.compressors.jsmin.JSMinCompressor'
+PIPELINE['CSS_COMPRESSOR'] = 'pipeline.compressors.cssmin.CSSMinCompressor'
+
+PIPELINE['COMPILERS'] = (
     'pipeline.compilers.stylus.StylusCompiler',
     'pipeline.compilers.coffee.CoffeeScriptCompiler',
 )
-
-PIPELINE_CSS = {
-    'links': {
-        'source_filenames': (
-            'super_api/styl/*.styl',
-            'main/styl/*.styl',
-        ),
-        'output_filename': os.path.join('css', 'compressed.css'),
-        'extra_context': {
-            'media': 'screen,projection',
-        },
-        'variant': 'datauri'
-    },
-}
-
-PIPELINE_JS = {
-    'scripts': {
-        'source_filenames': (
-            'super_api/coffee/*.coffee',
-            'main/js/*.js',
-            'main/coffee/*.coffee',
-        ),
-        'extra_context': {
-            'async': True,
-        },
-        'output_filename': os.path.join('js', 'compressed.js'),
-    }
-}
 
 LOGGING = {
     'version': 1,
