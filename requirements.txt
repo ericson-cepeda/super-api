@@ -17,4 +17,4 @@ pyjade==4.0.0
 django-pipeline==1.6.8
 jsmin==2.2.1
 watchdog==0.8.3
-supervisor==3.0b2
+supervisor-stdout==0.1.1
